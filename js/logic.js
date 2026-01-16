@@ -24,3 +24,24 @@ function calculateOverallAttendance(classes) {
   // Round the number and return it
   return Math.round(attendancePercentage);
 }
+
+
+//---------------
+
+
+// Decide overall academic risk based on attendance percentage
+function calculateOverallRisk(attendance, threshold) {
+
+  // If attendance meets or exceeds threshold
+  if (attendance >= threshold) {
+    return "Safe";
+  }
+
+  // If attendance is close to threshold
+  if (attendance >= threshold - 10) {
+    return "Borderline";
+  }
+
+  // If attendance is well below threshold
+  return "Danger";
+}
