@@ -45,3 +45,42 @@ function calculateOverallRisk(attendance, threshold) {
   // If attendance is well below threshold
   return "Danger";
 }
+
+
+//-----------------
+
+// Calculate attendance data for each subject
+function calculateSubjectAttendance(classes) {
+  const subjectStats = {};
+
+  // Loop through every class
+  classes.forEach(function (cls) {
+
+    // If subject not seen before, initialize it
+    if (!subjectStats[cls.subject]) {
+      subjectStats[cls.subject] = {
+        total: 0,
+        present: 0,
+        percentage: 0
+      };
+    }
+
+    // Increase total class count
+    subjectStats[cls.subject].total += 1;
+
+    // If present, increase present count
+    if (cls.status === "present") {
+      subjectStats[cls.subject].present += 1;
+    }
+  });
+
+  // Calculate percentage for each subject
+  for (let subject in subjectStats) {
+    const data = subjectStats[subject];
+    data.percentage = Math.round(
+      (data.present / data.total) * 100
+    );
+  }
+
+  return subjectStats;
+}
