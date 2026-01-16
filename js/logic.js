@@ -84,3 +84,31 @@ function calculateSubjectAttendance(classes) {
 
   return subjectStats;
 }
+
+
+//-------------------
+
+// Calculate how many future classes can be skipped per subject
+function calculateSkippableClasses(subjectStats, threshold) {
+  const result = {};
+
+  for (let subject in subjectStats) {
+    const total = subjectStats[subject].total;
+    const present = subjectStats[subject].present;
+
+    // If no classes yet, skipping doesn't make sense
+    if (total === 0) {
+      result[subject] = 0;
+      continue;
+    }
+
+    // Formula derived from attendance rule
+    const maxSkips =
+      Math.floor((present / (threshold / 100)) - total);
+
+    // You cannot skip negative classes
+    result[subject] = Math.max(0, maxSkips);
+  }
+
+  return result;
+}
