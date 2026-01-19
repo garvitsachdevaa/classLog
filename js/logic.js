@@ -1,57 +1,77 @@
 // logic.js
-// PURE logic only
+// --------------------------------------------------
+// PURE BUSINESS LOGIC ONLY
+// No DOM access, no UI code, no side effects
+// These functions are deterministic and testable
+// --------------------------------------------------
 
+/**
+ * Calculates overall attendance percentage
+ */
 function calculateOverallAttendance(classes) {
   if (classes.length === 0) return 0;
 
-  const presentCount = classes.filter(cls => cls.status === "present").length;
+  const presentCount = classes.filter(
+    cls => cls.status === "present"
+  ).length;
+
   return Math.round((presentCount / classes.length) * 100);
 }
 
+/**
+ * Determines academic risk level
+ */
 function calculateOverallRisk(attendance, threshold) {
   if (attendance >= threshold) return "Safe";
   if (attendance >= threshold - 10) return "Borderline";
   return "Danger";
 }
 
+/**
+ * Groups classes by subject and calculates attendance per subject
+ */
 function calculateSubjectAttendance(classes) {
-  const subjectStats = {};
+  const stats = {};
 
   classes.forEach(cls => {
-    if (!subjectStats[cls.subject]) {
-      subjectStats[cls.subject] = {
+    if (!stats[cls.subject]) {
+      stats[cls.subject] = {
         total: 0,
         present: 0,
         percentage: 0
       };
     }
 
-    subjectStats[cls.subject].total += 1;
+    stats[cls.subject].total += 1;
     if (cls.status === "present") {
-      subjectStats[cls.subject].present += 1;
+      stats[cls.subject].present += 1;
     }
   });
 
-  for (let subject in subjectStats) {
-    const data = subjectStats[subject];
-    data.percentage = Math.round((data.present / data.total) * 100);
+  // Compute percentage for each subject
+  for (let subject in stats) {
+    const data = stats[subject];
+    data.percentage = Math.round(
+      (data.present / data.total) * 100
+    );
   }
 
-  return subjectStats;
+  return stats;
 }
 
+/**
+ * Calculates how many future classes can be skipped
+ * while maintaining the attendance threshold
+ */
 function calculateSkippableClasses(subjectStats, threshold) {
   const result = {};
 
   for (let subject in subjectStats) {
     const { total, present } = subjectStats[subject];
 
-    if (total === 0) {
-      result[subject] = 0;
-      continue;
-    }
+    const maxSkips =
+      Math.floor((present / (threshold / 100)) - total);
 
-    const maxSkips = Math.floor((present / (threshold / 100)) - total);
     result[subject] = Math.max(0, maxSkips);
   }
 
