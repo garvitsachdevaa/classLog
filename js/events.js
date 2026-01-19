@@ -23,6 +23,7 @@ if (addClassForm) {
     renderOverallRisk();
     renderSubjectCards();
     renderClassTable();
+    renderAttendanceGraph();
 
     addClassForm.reset();
   });
@@ -40,4 +41,5 @@ document.addEventListener("click", function (event) {
   renderOverallRisk();
   renderSubjectCards();
   renderClassTable();
+  renderAttendanceGraph();
 });

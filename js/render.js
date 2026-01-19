@@ -101,3 +101,35 @@ renderOverallAttendance();
 renderOverallRisk();
 renderSubjectCards();
 renderClassTable();
+renderAttendanceGraph();
+
+
+/* ================= ATTENDANCE GRAPH ================= */
+
+function renderAttendanceGraph() {
+  const graph = document.querySelector("#attendanceGraph");
+  if (!graph) return;
+
+  // Remove existing bars (keep threshold line)
+  graph.querySelectorAll(".graph-bar-container").forEach(el => el.remove());
+
+  const subjectStats = calculateSubjectAttendance(state.classes);
+
+  for (let subject in subjectStats) {
+    const percentage = subjectStats[subject].percentage;
+
+    const container = document.createElement("div");
+    container.className = "graph-bar-container";
+
+    container.innerHTML = `
+      <div class="graph-bar" style="height: ${percentage}%">
+        <span class="bar-value">${percentage}%</span>
+      </div>
+      <span class="bar-label">
+        ${subject.slice(0, 3).toUpperCase()}
+      </span>
+    `;
+
+    graph.appendChild(container);
+  }
+}
