@@ -21,19 +21,23 @@ function renderOverallAttendance() {
 /* ---------- Academic Risk Card ---------- */
 
 function renderOverallRisk() {
-  const attendance = calculateOverallAttendance(state.classes);
-  const risk = calculateOverallRisk(
-    attendance,
-    state.threshold
-  );
-
   const card = document.querySelector("#overallRisk");
   if (!card) return;
 
   const value = card.querySelector(".stat-value");
+
+  // ✅ If no classes yet, show nothing
+  if (state.classes.length === 0) {
+    value.textContent = "—";
+    value.style.color = "var(--text-secondary)";
+    return;
+  }
+
+  const attendance = calculateOverallAttendance(state.classes);
+  const risk = calculateOverallRisk(attendance, state.threshold);
+
   value.textContent = risk;
 
-  // Color based on risk level
   value.style.color =
     risk === "Safe"
       ? "var(--success)"
@@ -41,6 +45,7 @@ function renderOverallRisk() {
       ? "orange"
       : "red";
 }
+
 
 /* ---------- Subject Cards ---------- */
 
