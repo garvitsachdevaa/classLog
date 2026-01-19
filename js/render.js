@@ -1,66 +1,37 @@
 // render.js
 // This file connects logic with the UI (HTML)
 
-// Function to update Overall Attendance card
+/* ================= OVERALL ATTENDANCE ================= */
+
 function renderOverallAttendance() {
+  const attendance = calculateOverallAttendance(state.classes);
 
-  // Ask logic.js to calculate attendance
-  // We pass the data from state.js
-  const attendance =
-    calculateOverallAttendance(state.classes);
+  const attendanceCard = document.querySelector("#overallAttendance");
+  if (!attendanceCard) return;
 
-  // Select the overall attendance card
-  const attendanceCard =
-    document.querySelector("#overallAttendance");
+  const valueElement = attendanceCard.querySelector(".stat-value");
+  const progressFill = attendanceCard.querySelector(".progress-fill");
 
-  // Inside the card, select the number text
-  const valueElement =
-    attendanceCard.querySelector(".stat-value");
-
-  // Inside the card, select the progress bar fill
-  const progressFill =
-    attendanceCard.querySelector(".progress-fill");
-
-  // Update the text (replaces hardcoded 82%)
   valueElement.textContent = attendance + "%";
-
-  // Update progress bar width
   progressFill.style.width = attendance + "%";
 }
 
-// Call the function ONCE when page loads
-renderOverallAttendance();
 
-
-// ------------------------
+/* ================= OVERALL RISK ================= */
 
 function renderOverallRisk() {
+  const attendance = calculateOverallAttendance(state.classes);
+  const risk = calculateOverallRisk(attendance, state.threshold);
 
-  // Step 1: get attendance %
-  const attendance =
-    calculateOverallAttendance(state.classes);
+  const riskCard = document.querySelector("#overallRisk");
+  if (!riskCard) return;
 
-  // Step 2: get risk status using logic
-  const risk =
-    calculateOverallRisk(attendance, state.threshold);
-
-  // Step 3: select risk card
-  const riskCard =
-    document.querySelector("#overallRisk");
-
-  // Step 4: select the text element
-  const valueElement =
-    riskCard.querySelector(".stat-value");
-
-  // Step 5: update text
+  const valueElement = riskCard.querySelector(".stat-value");
   valueElement.textContent = risk;
 
-  // Step 6: reset color classes
-  valueElement.className = "stat-value";
-
-  // Step 7: apply color based on risk
+  // Apply color directly (no missing CSS classes)
   if (risk === "Safe") {
-    valueElement.classList.add("status-safe");
+    valueElement.style.color = "var(--success)";
   } else if (risk === "Borderline") {
     valueElement.style.color = "orange";
   } else {
@@ -69,10 +40,46 @@ function renderOverallRisk() {
 }
 
 
+/* ================= SUBJECT CARDS ================= */
+
+function renderSubjectCards() {
+  const subjectStats = calculateSubjectAttendance(state.classes);
+  const skippable = calculateSkippableClasses(subjectStats, state.threshold);
+
+  const container = document.querySelector("#subjectCards");
+  if (!container) return;
+
+  // Remove hardcoded cards
+  container.innerHTML = "";
+
+  for (let subject in subjectStats) {
+    const data = subjectStats[subject];
+    const skipCount = skippable[subject];
+
+    const card = document.createElement("div");
+    card.className = "subject-card";
+
+    card.innerHTML = `
+      <h3>${subject}</h3>
+
+      <div class="subject-stat">${data.percentage}%</div>
+
+      <div class="mini-progress">
+        <div class="mini-fill" style="width: ${data.percentage}%"></div>
+      </div>
+
+      <p class="tagline">
+        You can skip <strong>${skipCount}</strong> class(es)
+      </p>
+    `;
+
+    container.appendChild(card);
+  }
+}
+
+
+/* ================= INITIAL RENDER ================= */
+
 renderOverallAttendance();
 renderOverallRisk();
-
-
-//---------------------------
-
-
+renderSubjectCards();
