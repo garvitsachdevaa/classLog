@@ -1,50 +1,40 @@
 // state.js
 // --------------------------------------------------
-// This file holds the GLOBAL APPLICATION STATE
-// It is the single source of truth for the app.
-//
-// Responsibilities:
-// 1. Load persisted class data from localStorage
-// 2. Save class data whenever it changes
-// 3. Expose the global `state` object
+// Global application state + persistence layer
 // --------------------------------------------------
 
-// Key used to store data in browser localStorage
-const STORAGE_KEY = "classlog_state";
+const STORAGE_KEY = "classlog_state_v2";
 
 /**
- * Loads saved classes from localStorage
- * @returns {Array} array of class objects
+ * Load full app state from localStorage
  */
-function loadClasses() {
+function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) return [];
+  if (!saved) {
+    return {
+      threshold: 80,
+      subjects: ["WebDev", "DSA", "Maths"],
+      classes: []
+    };
+  }
 
   try {
     return JSON.parse(saved);
   } catch {
-    // In case stored data is corrupted
-    return [];
+    return {
+      threshold: 80,
+      subjects: ["WebDev", "DSA", "Maths"],
+      classes: []
+    };
   }
 }
 
 /**
- * Saves current classes to localStorage
- * Called after every add/delete operation
+ * Persist full app state
  */
-function saveClasses() {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(state.classes)
-  );
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-// Global application state
-const state = {
-  // Attendance threshold (can be changed later via UI)
-  threshold: 80,
-
-  // Array of class objects
-  // Each object: { date, subject, topic, status }
-  classes: loadClasses()
-};
+// Global state object
+const state = loadState();

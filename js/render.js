@@ -1,24 +1,17 @@
 // render.js
 // --------------------------------------------------
-// Responsible for ALL DOM updates
-// Reads data from `state` and logic functions
-// Never mutates state
+// Responsible for ALL UI rendering
+// Reads from state, never mutates it
 // --------------------------------------------------
 
-/* ---------- Overall Attendance Card ---------- */
-
 function renderOverallAttendance() {
-  const attendance = calculateOverallAttendance(state.classes);
+  const val = calculateOverallAttendance(state.classes);
   const card = document.querySelector("#overallAttendance");
   if (!card) return;
 
-  card.querySelector(".stat-value").textContent =
-    attendance + "%";
-  card.querySelector(".progress-fill").style.width =
-    attendance + "%";
+  card.querySelector(".stat-value").textContent = val + "%";
+  card.querySelector(".progress-fill").style.width = val + "%";
 }
-
-/* ---------- Academic Risk Card ---------- */
 
 function renderOverallRisk() {
   const card = document.querySelector("#overallRisk");
@@ -26,7 +19,6 @@ function renderOverallRisk() {
 
   const value = card.querySelector(".stat-value");
 
-  // ✅ If no classes yet, show nothing
   if (state.classes.length === 0) {
     value.textContent = "—";
     value.style.color = "var(--text-secondary)";
@@ -37,17 +29,13 @@ function renderOverallRisk() {
   const risk = calculateOverallRisk(attendance, state.threshold);
 
   value.textContent = risk;
-
   value.style.color =
-    risk === "Safe"
-      ? "var(--success)"
-      : risk === "Borderline"
-      ? "orange"
-      : "red";
+    risk === "Safe" ? "var(--success)" :
+    risk === "Borderline" ? "orange" :
+    "red";
 }
 
-
-/* ---------- Subject Cards ---------- */
+/* ---------- Subject Cards (with Remove button) ---------- */
 
 function renderSubjectCards() {
   const container = document.querySelector("#subjectCards");
@@ -55,18 +43,18 @@ function renderSubjectCards() {
 
   container.innerHTML = "";
 
-  if (state.classes.length === 0) {
-    container.innerHTML =
-      `<p class="tagline">No subjects yet</p>`;
+  if (state.subjects.length === 0) {
+    container.innerHTML = `<p class="tagline">No subjects added</p>`;
     return;
   }
 
   const stats = calculateSubjectAttendance(state.classes);
-  const skippable =
-    calculateSkippableClasses(stats, state.threshold);
+  const skippable = calculateSkippableClasses(stats, state.threshold);
 
-  for (let subject in stats) {
-    const data = stats[subject];
+  state.subjects.forEach(subject => {
+    const data = stats[subject] || { percentage: 0 };
+    const skip = skippable[subject] || 0;
+
     const card = document.createElement("div");
     card.className = "subject-card";
 
@@ -76,13 +64,14 @@ function renderSubjectCards() {
       <div class="mini-progress">
         <div class="mini-fill" style="width:${data.percentage}%"></div>
       </div>
-      <p class="tagline">
-        You can skip <strong>${skippable[subject]}</strong> class(es)
-      </p>
+      <p class="tagline">You can skip <strong>${skip}</strong> class(es)</p>
+      <button class="btn-delete" data-subject="${subject}">
+        Remove Subject
+      </button>
     `;
 
     container.appendChild(card);
-  }
+  });
 }
 
 /* ---------- Recent Activity Table ---------- */
@@ -103,10 +92,8 @@ function renderClassTable() {
     return;
   }
 
-  // Reverse to show latest entries first
   [...state.classes].reverse().forEach((cls, i) => {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${cls.date}</td>
       <td>${cls.subject}</td>
@@ -117,13 +104,11 @@ function renderClassTable() {
         </span>
       </td>
       <td>
-        <button class="btn-delete"
-          data-index="${state.classes.length - 1 - i}">
+        <button class="btn-delete" data-index="${state.classes.length - 1 - i}">
           Delete
         </button>
       </td>
     `;
-
     tbody.appendChild(tr);
   });
 }
@@ -134,15 +119,12 @@ function renderAttendanceGraph() {
   const graph = document.querySelector("#attendanceGraph");
   if (!graph) return;
 
-  // Remove old bars but keep threshold line
-  graph
-    .querySelectorAll(".graph-bar-container")
-    .forEach(el => el.remove());
+  graph.querySelectorAll(".graph-bar-container").forEach(e => e.remove());
 
   const stats = calculateSubjectAttendance(state.classes);
 
-  for (let subject in stats) {
-    const percentage = stats[subject].percentage;
+  state.subjects.forEach(subject => {
+    const percentage = stats[subject]?.percentage ?? 0;
 
     const bar = document.createElement("div");
     bar.className = "graph-bar-container";
@@ -151,13 +133,11 @@ function renderAttendanceGraph() {
       <div class="graph-bar" style="height:${percentage}%">
         <span class="bar-value">${percentage}%</span>
       </div>
-      <span class="bar-label">
-        ${subject.slice(0, 3).toUpperCase()}
-      </span>
+      <span class="bar-label">${subject.slice(0,3).toUpperCase()}</span>
     `;
 
     graph.appendChild(bar);
-  }
+  });
 }
 
 /* ---------- Master Render ---------- */
@@ -170,5 +150,4 @@ function renderAll() {
   renderAttendanceGraph();
 }
 
-// Initial render on page load
 renderAll();
