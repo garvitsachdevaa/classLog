@@ -46,7 +46,7 @@
             <label for="classSubject">Subject</label>
             <select id="classSubject" required>
               <option value="WebDev">WebDev</option>
-              <option value="DSA">Data Structures and Algorithms(DSA)</option>
+              <option value="DSA">Data Structures and Algorithms (DSA)</option>
               <option value="Maths">Maths</option>
             </select>
           </div>
@@ -72,44 +72,47 @@
     <section class="hero">
       <div class="hero-card" id="overallAttendance">
         <small>Overall Attendance</small>
-        <div class="stat-value">82%</div>
-        <div class="progress-bar"><div class="progress-fill" style="width: 82%"></div></div>
+        <div class="stat-value">0%</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
       </div>
       <div class="hero-card" id="overallRisk">
         <small>Academic Risk</small>
-        <div class="stat-value" style="color: var(--success)">Low</div>
+        <div class="stat-value">—</div>
         <p class="tagline">Based on 80% threshold</p>
       </div>
     </section>
 
     <div class="dashboard-grid">
+
       <!-- SUBJECT CARDS -->
       <section class="section side-section">
         <div class="section-header">
           <h2>Subjects</h2>
           <button class="btn btn-ghost">Add Subject</button>
         </div>
+
+        <!-- JS WILL RENDER SUBJECT CARDS HERE -->
         <div class="subject-col" id="subjectCards">
+
+          <!--
           <div class="subject-card">
             <h3>WebDev</h3>
             <div class="subject-stat">85%</div>
-            <div class="mini-progress"><div class="mini-fill" style="width: 85%"></div></div>
+            <div class="mini-progress">
+              <div class="mini-fill" style="width: 85%"></div>
+            </div>
           </div>
-          <div class="subject-card">
-            <h3>DSA</h3>
-            <div class="subject-stat">78%</div>
-            <div class="mini-progress"><div class="mini-fill" style="width: 78%; background: var(--warning)"></div></div>
-          </div>
-          <div class="subject-card">
-            <h3>Maths</h3>
-            <div class="subject-stat">92%</div>
-            <div class="mini-progress"><div class="mini-fill" style="width: 92%"></div></div>
-          </div>
+          -->
+
         </div>
       </section>
 
       <!-- GRAPH & TABLE -->
       <div class="main-content-flow">
+
+        <!-- ATTENDANCE GRAPH -->
         <section class="section">
           <h2>Attendance Trends</h2>
           <div class="card graph-card">
@@ -121,26 +124,19 @@
                 <span>25</span>
                 <span>0</span>
               </div>
+
               <div class="graph" id="attendanceGraph">
                 <div class="graph-threshold-line"></div>
+
+                <!--
                 <div class="graph-bar-container">
                   <div class="graph-bar" style="height: 85%">
                     <span class="bar-value">85%</span>
                   </div>
                   <span class="bar-label">WEB</span>
                 </div>
-                <div class="graph-bar-container">
-                  <div class="graph-bar" style="height: 78%; background: var(--warning)">
-                    <span class="bar-value">78%</span>
-                  </div>
-                  <span class="bar-label">DSA</span>
-                </div>
-                <div class="graph-bar-container">
-                  <div class="graph-bar" style="height: 92%">
-                    <span class="bar-value">92%</span>
-                  </div>
-                  <span class="bar-label">MAT</span>
-                </div>
+                -->
+
               </div>
             </div>
           </div>
@@ -161,6 +157,8 @@
                 </tr>
               </thead>
               <tbody id="classTableBody">
+
+                <!--
                 <tr>
                   <td>2026-01-15</td>
                   <td>WebDev</td>
@@ -168,27 +166,23 @@
                   <td><span class="badge present">Present</span></td>
                   <td><button class="btn-delete">Delete</button></td>
                 </tr>
-                <tr>
-                  <td>2026-01-14</td>
-                  <td>DSA</td>
-                  <td>Binary Search Trees</td>
-                  <td><span class="badge absent">Absent</span></td>
-                  <td><button class="btn-delete">Delete</button></td>
-                </tr>
+                -->
+
               </tbody>
             </table>
           </div>
         </section>
+
       </div>
     </div>
 
   </main>
 
-  <!-- JS (Ready for future implementation) -->
-  <script src="js/state.js"></script>
-  <script src="js/logic.js"></script>
-  <script src="js/render.js"></script>
-  <script src="js/events.js"></script>
+  <!-- JS -->
+  <script src="/js/state.js"></script>
+  <script src="/js/logic.js"></script>
+  <script src="/js/render.js"></script>
+  <script src="/js/events.js"></script>
 
 </body>
 </html>

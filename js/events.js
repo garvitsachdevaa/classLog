@@ -1,43 +1,43 @@
 // events.js
-// Handles user interactions (form submission)
+// User interactions
 
-// Select the form
 const addClassForm = document.querySelector("#addClassForm");
 
-// Safety check
 if (addClassForm) {
   addClassForm.addEventListener("submit", function (event) {
-    // Prevent page reload
     event.preventDefault();
 
-    // Read values from form
     const date = document.querySelector("#classDate").value;
     const subject = document.querySelector("#classSubject").value;
     const topic = document.querySelector("#classTopic").value;
-    const status = document.querySelector("#classStatus").value;
+    const status = document.querySelector("#classStatus").value.toLowerCase();
 
-    // Normalize status to match logic ("present" / "absent")
-    const normalizedStatus =
-      status.toLowerCase();
-
-    // Add new class to state
     state.classes.push({
-      date: date,
-      subject: subject,
-      topic: topic,
-      status: normalizedStatus
+      date,
+      subject,
+      topic,
+      status
     });
 
-    // Re-render UI
     renderOverallAttendance();
     renderOverallRisk();
     renderSubjectCards();
+    renderClassTable();
 
-    // Reset form for next entry
     addClassForm.reset();
   });
 }
 
-//------------------
+/* ================= DELETE HANDLER ================= */
 
+document.addEventListener("click", function (event) {
+  if (!event.target.classList.contains("btn-delete")) return;
 
+  const index = Number(event.target.dataset.index);
+  state.classes.splice(index, 1);
+
+  renderOverallAttendance();
+  renderOverallRisk();
+  renderSubjectCards();
+  renderClassTable();
+});

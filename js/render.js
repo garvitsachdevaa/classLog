@@ -1,21 +1,17 @@
 // render.js
-// This file connects logic with the UI (HTML)
+// UI rendering only
 
 /* ================= OVERALL ATTENDANCE ================= */
 
 function renderOverallAttendance() {
   const attendance = calculateOverallAttendance(state.classes);
 
-  const attendanceCard = document.querySelector("#overallAttendance");
-  if (!attendanceCard) return;
+  const card = document.querySelector("#overallAttendance");
+  if (!card) return;
 
-  const valueElement = attendanceCard.querySelector(".stat-value");
-  const progressFill = attendanceCard.querySelector(".progress-fill");
-
-  valueElement.textContent = attendance + "%";
-  progressFill.style.width = attendance + "%";
+  card.querySelector(".stat-value").textContent = attendance + "%";
+  card.querySelector(".progress-fill").style.width = attendance + "%";
 }
-
 
 /* ================= OVERALL RISK ================= */
 
@@ -23,53 +19,42 @@ function renderOverallRisk() {
   const attendance = calculateOverallAttendance(state.classes);
   const risk = calculateOverallRisk(attendance, state.threshold);
 
-  const riskCard = document.querySelector("#overallRisk");
-  if (!riskCard) return;
+  const card = document.querySelector("#overallRisk");
+  if (!card) return;
 
-  const valueElement = riskCard.querySelector(".stat-value");
-  valueElement.textContent = risk;
+  const value = card.querySelector(".stat-value");
+  value.textContent = risk;
 
-  // Apply color directly (no missing CSS classes)
-  if (risk === "Safe") {
-    valueElement.style.color = "var(--success)";
-  } else if (risk === "Borderline") {
-    valueElement.style.color = "orange";
-  } else {
-    valueElement.style.color = "red";
-  }
+  if (risk === "Safe") value.style.color = "var(--success)";
+  else if (risk === "Borderline") value.style.color = "orange";
+  else value.style.color = "red";
 }
-
 
 /* ================= SUBJECT CARDS ================= */
 
 function renderSubjectCards() {
-  const subjectStats = calculateSubjectAttendance(state.classes);
-  const skippable = calculateSkippableClasses(subjectStats, state.threshold);
-
   const container = document.querySelector("#subjectCards");
   if (!container) return;
 
-  // Remove hardcoded cards
   container.innerHTML = "";
+
+  const subjectStats = calculateSubjectAttendance(state.classes);
+  const skippable = calculateSkippableClasses(subjectStats, state.threshold);
 
   for (let subject in subjectStats) {
     const data = subjectStats[subject];
-    const skipCount = skippable[subject];
 
     const card = document.createElement("div");
     card.className = "subject-card";
 
     card.innerHTML = `
       <h3>${subject}</h3>
-
       <div class="subject-stat">${data.percentage}%</div>
-
       <div class="mini-progress">
-        <div class="mini-fill" style="width: ${data.percentage}%"></div>
+        <div class="mini-fill" style="width:${data.percentage}%"></div>
       </div>
-
       <p class="tagline">
-        You can skip <strong>${skipCount}</strong> class(es)
+        You can skip <strong>${skippable[subject]}</strong> class(es)
       </p>
     `;
 
@@ -77,9 +62,42 @@ function renderSubjectCards() {
   }
 }
 
+/* ================= RECENT ACTIVITY TABLE ================= */
+
+function renderClassTable() {
+  const tbody = document.querySelector("#classTableBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  const classes = [...state.classes].reverse();
+
+  classes.forEach((cls, i) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${cls.date}</td>
+      <td>${cls.subject}</td>
+      <td>${cls.topic}</td>
+      <td>
+        <span class="badge ${cls.status}">
+          ${cls.status.charAt(0).toUpperCase() + cls.status.slice(1)}
+        </span>
+      </td>
+      <td>
+        <button class="btn-delete" data-index="${state.classes.length - 1 - i}">
+          Delete
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
 
 /* ================= INITIAL RENDER ================= */
 
 renderOverallAttendance();
 renderOverallRisk();
 renderSubjectCards();
+renderClassTable();
