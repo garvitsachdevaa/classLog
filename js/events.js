@@ -19,6 +19,8 @@ if (addClassForm) {
       status
     });
 
+    saveState();
+
     renderOverallAttendance();
     renderOverallRisk();
     renderSubjectCards();
@@ -36,6 +38,8 @@ document.addEventListener("click", function (event) {
 
   const index = Number(event.target.dataset.index);
   state.classes.splice(index, 1);
+
+  saveState();
 
   renderOverallAttendance();
   renderOverallRisk();
