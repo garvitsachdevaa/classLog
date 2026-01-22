@@ -563,3 +563,120 @@ input:focus, select:focus {
     font-size: 1.1rem;
   }
 }
+
+
+/* ============================= */
+/* FIX: Date picker & dropdowns */
+/* ============================= */
+
+/* Ensures native calendar is visible in dark mode */
+input[type="date"] {
+  color-scheme: dark;
+}
+
+/* Makes dropdown options readable */
+select option {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* ============================= */
+/* MOBILE RESPONSIVENESS FIXES  */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+  /* MAIN CONTAINER */
+  .main {
+    padding: 1rem;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .header-meta {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .meta-item {
+    align-items: flex-start;
+  }
+
+  /* FORM */
+  .grid-form {
+    grid-template-columns: 1fr;
+  }
+
+  /* HERO CARDS */
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  /* DASHBOARD LAYOUT */
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* SUBJECT COLUMN */
+  .side-section {
+    order: -1; /* Subjects move to top */
+  }
+
+  .subject-card {
+    padding: 1rem;
+  }
+
+  /* GRAPH */
+  .graph-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .graph-wrapper {
+    height: 240px;
+  }
+
+  .bar-label {
+    font-size: 0.65rem;
+  }
+
+  /* TABLE */
+  .table-card {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    width: 100%;
+  }
+}
+
+/* EXTRA SMALL DEVICES */
+@media (max-width: 480px) {
+
+  .logo-container .logo {
+    font-size: 1.8rem;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .subject-stat {
+    font-size: 1.1rem;
+  }
+
+  .graph-wrapper {
+    height: 220px;
+  }
+}

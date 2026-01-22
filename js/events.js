@@ -1,7 +1,11 @@
 // events.js
 // --------------------------------------------------
-// Handles ALL user interactions
-// Mutates state → saves → re-renders
+// USER INTERACTIONS
+//
+// Responsibilities:
+// - Mutate state
+// - Persist state
+// - Trigger re-render
 // --------------------------------------------------
 
 const form = document.querySelector("#addClassForm");
@@ -10,15 +14,21 @@ const addSubjectBtn = document.querySelector(".btn-ghost");
 /* ---------- Add Class ---------- */
 
 if (form) {
-  form.addEventListener("submit", e => {
-    e.preventDefault();
+  form.addEventListener("submit", event => {
+    event.preventDefault();
 
     const date = classDate.value;
     const subject = classSubject.value;
     const topic = classTopic.value;
     const status = classStatus.value.toLowerCase();
 
-    state.classes.push({ date, subject, topic, status });
+    state.classes.push({
+      date,
+      subject,
+      topic,
+      status
+    });
+
     saveState();
     renderAll();
     form.reset();
@@ -29,10 +39,12 @@ if (form) {
 
 if (addSubjectBtn) {
   addSubjectBtn.addEventListener("click", () => {
-    const name = prompt("Enter new subject name:");
-    if (!name) return;
+    const input = prompt("Enter new subject name:");
+    if (!input) return;
 
-    const subject = name.trim();
+    const subject = input.trim();
+    if (!subject) return;
+
     if (state.subjects.includes(subject)) {
       alert("Subject already exists");
       return;
@@ -44,28 +56,36 @@ if (addSubjectBtn) {
   });
 }
 
-/* ---------- Delete Class OR Subject (delegation) ---------- */
+/* ---------- Delete Class OR Subject (Event Delegation) ---------- */
 
-document.addEventListener("click", e => {
+document.addEventListener("click", event => {
 
-  // Delete class
-  if (e.target.classList.contains("btn-delete") && e.target.dataset.index) {
-    const index = Number(e.target.dataset.index);
+  // Delete class entry
+  if (
+    event.target.classList.contains("btn-delete") &&
+    event.target.dataset.index
+  ) {
+    const index = Number(event.target.dataset.index);
     state.classes.splice(index, 1);
     saveState();
     renderAll();
     return;
   }
 
-  // Delete subject
-  if (e.target.classList.contains("btn-delete") && e.target.dataset.subject) {
-    const subject = e.target.dataset.subject;
+  // Delete subject and all its classes
+  if (
+    event.target.classList.contains("btn-delete") &&
+    event.target.dataset.subject
+  ) {
+    const subject = event.target.dataset.subject;
 
-    // Remove subject
-    state.subjects = state.subjects.filter(s => s !== subject);
+    state.subjects = state.subjects.filter(
+      s => s !== subject
+    );
 
-    // Remove all classes under that subject
-    state.classes = state.classes.filter(c => c.subject !== subject);
+    state.classes = state.classes.filter(
+      cls => cls.subject !== subject
+    );
 
     saveState();
     renderAll();

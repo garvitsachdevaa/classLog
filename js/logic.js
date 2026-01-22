@@ -1,18 +1,16 @@
 // logic.js
 // --------------------------------------------------
-// Pure business logic (NO DOM, NO state mutation)
+// PURE BUSINESS LOGIC
 // --------------------------------------------------
 
 function calculateOverallAttendance(classes) {
   if (classes.length === 0) return 0;
-  const present = classes.filter(c => c.status === "present").length;
-  return Math.round((present / classes.length) * 100);
-}
 
-function calculateOverallRisk(attendance, threshold) {
-  if (attendance >= threshold) return "Safe";
-  if (attendance >= threshold - 10) return "Borderline";
-  return "Danger";
+  const presentCount = classes.filter(
+    cls => cls.status === "present"
+  ).length;
+
+  return Math.round((presentCount / classes.length) * 100);
 }
 
 function calculateSubjectAttendance(classes) {
@@ -20,28 +18,58 @@ function calculateSubjectAttendance(classes) {
 
   classes.forEach(cls => {
     if (!stats[cls.subject]) {
-      stats[cls.subject] = { total: 0, present: 0, percentage: 0 };
+      stats[cls.subject] = {
+        total: 0,
+        present: 0,
+        percentage: 0
+      };
     }
+
     stats[cls.subject].total++;
-    if (cls.status === "present") stats[cls.subject].present++;
+    if (cls.status === "present") {
+      stats[cls.subject].present++;
+    }
   });
 
-  for (let subject in stats) {
-    const d = stats[subject];
-    d.percentage = Math.round((d.present / d.total) * 100);
-  }
+  Object.keys(stats).forEach(subject => {
+    const s = stats[subject];
+    s.percentage = Math.round((s.present / s.total) * 100);
+  });
 
   return stats;
+}
+
+/**
+ * Risk rules:
+ * Safe: >= 85%
+ * Borderline: 80–84%
+ * Danger: < 80%
+ */
+function calculateSubjectRisk(subjectStats, threshold) {
+  const risks = {};
+
+  Object.keys(subjectStats).forEach(subject => {
+    const pct = subjectStats[subject].percentage;
+
+    if (pct >= 85) risks[subject] = "Safe";
+    else if (pct >= threshold) risks[subject] = "Borderline";
+    else risks[subject] = "Danger";
+  });
+
+  return risks;
 }
 
 function calculateSkippableClasses(subjectStats, threshold) {
   const result = {};
 
-  for (let s in subjectStats) {
-    const { total, present } = subjectStats[s];
-    const maxSkips = Math.floor((present / (threshold / 100)) - total);
-    result[s] = Math.max(0, maxSkips);
-  }
+  Object.keys(subjectStats).forEach(subject => {
+    const { total, present } = subjectStats[subject];
+
+    const maxSkips =
+      Math.floor((present / (threshold / 100)) - total);
+
+    result[subject] = Math.max(0, maxSkips);
+  });
 
   return result;
 }

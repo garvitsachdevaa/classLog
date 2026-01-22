@@ -1,15 +1,22 @@
 // state.js
 // --------------------------------------------------
-// Global application state + persistence layer
+// GLOBAL APPLICATION STATE + PERSISTENCE
+//
+// This file is responsible for:
+// - Holding the single source of truth (state)
+// - Loading state from localStorage on startup
+// - Saving state back to localStorage on changes
 // --------------------------------------------------
 
 const STORAGE_KEY = "classlog_state_v2";
 
 /**
- * Load full app state from localStorage
+ * Load entire app state from localStorage.
+ * Falls back to defaults if nothing is saved or data is corrupted.
  */
 function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
+
   if (!saved) {
     return {
       threshold: 80,
@@ -30,11 +37,12 @@ function loadState() {
 }
 
 /**
- * Persist full app state
+ * Persist current state to localStorage.
+ * Called after every state mutation.
  */
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-// Global state object
+// Global state object (single source of truth)
 const state = loadState();

@@ -8,27 +8,31 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="logo-container">
-      <h1 class="logo">Class<span>Log</span></h1>
-      <p class="tagline">Track your attendance</p>
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo-container">
+    <h1 class="logo">Class<span>Log</span></h1>
+    <p class="tagline">Track your attendance</p>
+  </div>
+
+  <div class="header-meta">
+    <div class="meta-item">
+      <span class="meta-label">Required</span>
+      <span class="meta-value">80%</span>
     </div>
-    <div class="header-meta">
-      <div class="meta-item">
-        <span class="meta-label">Required</span>
-        <span class="meta-value">80%</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Status</span>
-        <span class="meta-value" style="color: var(--success)">On Track</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Last Sink</span>
-        <span class="meta-value">Just Now</span>
-      </div>
+
+    <div class="meta-item">
+      <span class="meta-label">Status</span>
+      <span class="meta-value" id="navStatus">—</span>
     </div>
-  </header>
+
+    <div class="meta-item">
+      <span class="meta-label">Last Sync</span>
+      <span class="meta-value" id="lastSync">—</span>
+    </div>
+  </div>
+</header>
+
 
   <!-- MAIN -->
   <main class="main">
